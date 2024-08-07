@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- AlpineJS -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="index.mjs"></script>
+    <style>
+        body {
+            padding: 20px;
+            background-color: #e0f7fa; /* Light blue background */
+        }
+    </style>
+</head>
+
+<body class="bg-light-blue-50">
+    <div x-data="carApp" class="container mx-auto p-4 bg-white shadow rounded">
+        <h1 class="text-3xl font-bold text-center mb-8 text-blue-700">Car CRUD System</h1>
+
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4 text-blue-600">Create Car</h2>
+            <form @submit.prevent="addCar" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div>
+                    <label for="color" class="block text-sm font-medium text-blue-800">Color</label>
+                    <input x-model="newCar.color" id="color" type="text" class="mt-1 block w-full border-blue-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+                </div>
+                <div>
+                    <label for="make" class="block text-sm font-medium text-blue-800">Make</label>
+                    <input x-model="newCar.make" id="make" type="text" class="mt-1 block w-full border-blue-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+                </div>
+                <div>
+                    <label for="model" class="block text-sm font-medium text-blue-800">Model</label>
+                    <input x-model="newCar.model" id="model" type="text" class="mt-1 block w-full border-blue-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+                </div>
+                <div>
+                    <label for="reg_number" class="block text-sm font-medium text-blue-800">Reg Number</label>
+                    <input x-model="newCar.reg_number" id="reg_number" type="text" class="mt-1 block w-full border-blue-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+                </div>
+                <div class="col-span-1 sm:col-span-2 lg:col-span-4 text-right">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Add Car</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4 text-blue-600">Car List</h2>
+            <ul class="divide-y divide-blue-200">
+                <template x-for="car in cars" :key="car.reg_number">
+                    <li class="py-4 flex justify-between items-center">
+                        <span x-text="`${car.color} ${car.make} ${car.model} (${car.reg_number})`" class="text-lg font-medium text-blue-800"></span>
+                        <button @click.prevent="deleteCar(car.reg_number)" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Delete</button>
+                    </li>
+                </template>
+            </ul>
+        </div>
+
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4 text-blue-600">Town with Most Blue Cars</h2>
+            <button @click="getMostBlueCars" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mb-4">Get Town with Most Blue Cars</button>
+            <div class="text-lg font-medium text-blue-800" x-text="mostBlueCarsTown"></div>
+        </div>
+    </div>
+
+    <script>
+        function carApp() {
+            return {
+                cars: [],
+                newCar: { color: '', make: '', model: '', reg_number: '' },
+                mostBlueCarsTown: '',
+                async fetchCars() {
+                    const response = await axios.get('http://localhost:3005/cars');
+                    this.cars = response.data;
+                },
+                async addCar() {
+                    await axios.post('http://localhost:3005/cars', this.newCar);
+                    this.newCar = { color: '', make: '', model: '', reg_number: '' };
+                    this.fetchCars();
+                },
+                async deleteCar(reg_number) {
+                    await axios.delete(`http://localhost:3005/cars/${reg_number}`);
+                    this.fetchCars();
+                },
+                async getMostBlueCars() {
+                    const response = await axios.get('http://localhost:3005/cars/mostBlueCars');
+                    this.mostBlueCarsTown = response.data.mostBlueCarsTown;
+                },
+                async init() {
+                    this.fetchCars();
+                }
+            }
+        }
+    </script>
+</body>
+<div class="footer container">
+    <strong>
+        <p>&copy; 2024 MntimandeConsultingServices🐊.</p>
+    </strong>
+</div>
+
+</html>

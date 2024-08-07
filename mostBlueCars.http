@@ -1,0 +1,53 @@
+### Get all cars
+GET http://localhost:3005/cars
+Accept: application/json
+
+###
+
+### Create a new car
+POST http://localhost:3005/cars
+Content-Type: application/json
+
+{
+  "color": "green",
+  "make": "Honda",
+  "model": "Civic",
+  "reg_number": "CJ 12345"
+}
+
+###
+
+### Create another car
+POST http://localhost:3005/cars
+Content-Type: application/json
+
+{
+  "color": "blue",
+  "make": "Toyota",
+  "model": "Yaris",
+  "reg_number": "CY 67890"
+}
+
+###
+
+### Update an existing car
+PUT http://localhost:3005/cars/CJ 12345
+Content-Type: application/json
+
+{
+  "color": "blue",
+  "make": "Honda",
+  "model": "Civic",
+  "reg_number": "CJ 12345"
+}
+
+###
+
+### Delete a car
+DELETE http://localhost:3005/cars/CJ 12345
+
+###
+
+### Get the town with the most blue cars
+GET http://localhost:3005/cars/mostBlueCars
+Accept: application/json
