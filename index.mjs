@@ -5,7 +5,14 @@ import cors from 'cors';
 const app = express();
 app.use(bodyParser.json()); // Middleware to parse JSON bodies
 app.use(cors()); // Middleware to allow cross-origin requests
-app.use(express.static('public'));
+app.use(express.static('public', {
+    setHeaders: (res, path) => {
+        if (path.endsWith('.mjs')) {
+            res.setHeader('Content-Type', 'application/javascript');
+        }
+    }
+}));
+
 
 // Initial car data
 let cars = [
